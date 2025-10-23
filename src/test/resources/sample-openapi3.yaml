@@ -1,0 +1,62 @@
+---
+openapi: 3.0.3
+info:
+  title: showcase-beor-v1
+  description: Bear-runtime-light
+  version: 1.0.0-ISPDEV
+servers:
+  - url: ""
+tags:
+  - name: OpenAPI Validation
+    description: Endpoints for validating OpenAPI specification files
+paths:
+  /validate-file:
+    post:
+      tags:
+        - OpenAPI Validation
+      operationId: ValidationController.validateOpenApiSpec
+      description: Uploads and validates an OpenAPI specification file in YAML or
+        JSON format.
+      summary: Validate OpenAPI specification file
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              required:
+                - file
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                description: Response containing the result of OpenAPI specification
+                  validation
+                $ref: '#/components/schemas/ValidationResponse'
+      x-operation-name: validateOpenApiSpec
+components:
+  schemas:
+    ValidationResponse:
+      description: Response containing the result of OpenAPI specification validation
+      type: object
+      properties:
+        valid:
+          description: Indicates if the file is valid
+          type: boolean
+          example: "true"
+        errors:
+          description: "List of validation error messages, if any"
+          type: array
+          items:
+            type: string
+        warnings:
+          description: Detailed validation messages or warnings
+          type: array
+          items:
+            type: string
+          example: "[\"Unused schema detected\"]"

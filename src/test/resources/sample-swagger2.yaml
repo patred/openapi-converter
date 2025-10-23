@@ -1,10 +1,68 @@
-swagger: "2.0"
-info:
-  title: Simple API
-  version: "1.0.0"
-paths:
-  /hello:
-    get:
-      responses:
-        200:
-          description: Success
+{
+  "swagger" : "2.0",
+  "info" : {
+    "title" : "showcase-beor-v1",
+    "description" : "Bear-runtime-light",
+    "version" : "1.0.0-ISPDEV"
+  },
+  "paths" : {
+    "/validate-file" : {
+      "post" : {
+        "summary" : "Validate OpenAPI specification file",
+        "description" : "Uploads and validates an OpenAPI specification file in YAML or JSON format.",
+        "operationId" : "ValidationController.validateOpenApiSpec",
+        "tags" : [ "OpenAPI Validation" ],
+        "parameters" : [ {
+          "in" : "body",
+          "name" : "body",
+          "schema" : {
+            "required" : [ "file" ],
+            "type" : "object",
+            "properties" : {
+              "file" : {
+                "type" : "string",
+                "format" : "binary"
+              }
+            }
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/ValidationResponse"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions" : {
+    "ValidationResponse" : {
+      "description" : "Response containing the result of OpenAPI specification validation",
+      "type" : "object",
+      "properties" : {
+        "valid" : {
+          "description" : "Indicates if the file is valid",
+          "type" : "boolean",
+          "example" : "true"
+        },
+        "errors" : {
+          "description" : "List of validation error messages, if any",
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          }
+        },
+        "warnings" : {
+          "description" : "Detailed validation messages or warnings",
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          },
+          "example" : "[\"Unused schema detected\"]"
+        }
+      }
+    }
+  }
+}

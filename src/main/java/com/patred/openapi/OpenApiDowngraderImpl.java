@@ -1,5 +1,7 @@
 package com.patred.openapi;
 
+import com.patred.openapi.model.Format;
+import com.patred.openapi.util.FormatUtils;
 import java.net.URI;
 import java.util.Iterator;
 import java.util.Map;
@@ -19,13 +21,13 @@ public class OpenApiDowngraderImpl implements OpenApiDowngrader {
   private final ObjectMapper yamlMapper = new ObjectMapper(new YAMLFactory());
 
   public String convertToV2(String spec) throws Exception {
-    boolean isYaml = isYaml(spec);
-    return convertToV2(spec, isYaml);
+    Format format = FormatUtils.isYaml(spec) ? Format.YAML : Format.JSON;
+    return convertToV2(spec, format);
   }
 
-  public String convertToV2(String spec, boolean outputYaml) throws Exception {
-    ObjectMapper inputMapper = isYaml(spec) ? yamlMapper : jsonMapper;
-    ObjectMapper outputMapper = outputYaml ? yamlMapper : jsonMapper;
+  public String convertToV2(String spec, Format format) throws Exception {
+    ObjectMapper inputMapper = FormatUtils.isYaml(spec) ? yamlMapper : jsonMapper;
+    ObjectMapper outputMapper = format == Format.YAML ? yamlMapper : jsonMapper;
 
     JsonNode openApiNode = inputMapper.readTree(spec);
     if (!openApiNode.has("openapi")) {
@@ -68,6 +70,7 @@ public class OpenApiDowngraderImpl implements OpenApiDowngrader {
 
     return outputMapper.writerWithDefaultPrettyPrinter().writeValueAsString(swagger);
   }
+
 
   private ObjectNode convertPaths(JsonNode pathsNode, ObjectMapper mapper) {
     ObjectNode paths = mapper.createObjectNode();
@@ -183,11 +186,5 @@ public class OpenApiDowngraderImpl implements OpenApiDowngrader {
       }
     } catch (Exception ignored) {
     }
-  }
-
-  /** Rileva se la stringa è YAML (anziché JSON) */
-  private boolean isYaml(String spec) {
-    String trimmed = spec.trim();
-    return !(trimmed.startsWith("{") || trimmed.startsWith("["));
   }
 }

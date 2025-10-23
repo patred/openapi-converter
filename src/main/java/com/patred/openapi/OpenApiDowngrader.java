@@ -1,5 +1,7 @@
 package com.patred.openapi;
 
+import com.patred.openapi.model.Format;
+
 /**
  * Converter da Swagger 2 (OpenAPI 2.0) a OpenAPI 3.x
  */
@@ -19,9 +21,9 @@ public interface OpenApiDowngrader {
    * Converte una specifica OpenAPI 3 in OpenAPI 2 (Swagger), forzando l’output.
    *
    * @param spec       Contenuto della specifica (JSON o YAML)
-   * @param outputYaml true per forzare YAML, false per forzare JSON
+   * @param format YAML o JSON per forzare il formato di output
    * @return Specifica convertita in 2 (Swagger), nel formato richiesto
    * @throws Exception se la conversione fallisce
    */
-  String convertToV2(String spec, boolean outputYaml) throws Exception;
+  String convertToV2(String spec, Format format) throws Exception;
 }
